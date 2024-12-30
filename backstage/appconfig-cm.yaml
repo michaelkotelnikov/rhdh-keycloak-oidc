@@ -1,0 +1,39 @@
+kind: ConfigMap
+apiVersion: v1
+metadata:
+  name: rhdh-custom-appconfig
+  namespace: rhdh-operator
+data:
+  app-config.yaml: |
+    app:
+      baseUrl: 'https://<rhdh-route-name>'
+    backend:
+      baseUrl: 'https://<rhdh-route-name>'
+      listen:
+        port: 7007
+        host: 0.0.0.0
+    catalog:
+      providers:
+        keycloakOrg:
+          default:
+            baseUrl: ${AUTH_OIDC_BASE_URL}
+            username: ${KEYCLOAK_USER}
+            password: ${KEYCLOAK_PASSWORD}
+            realm: master
+            loginRealm: master
+            schedule:
+               frequency: { minutes: 1 }
+               timeout: { minutes: 1 }
+               initialDelay: { seconds: 15 }
+    auth:
+      environment: production
+      session:
+        secret: mysecret
+      providers:
+        oidc:
+          production:
+            metadataUrl: ${AUTH_OIDC_METADATA_URL}
+            clientId: ${AUTH_OIDC_CLIENT_ID}
+            clientSecret: ${AUTH_OIDC_CLIENT_SECRET}
+            prompt: auto
+    signInPage: oidc
